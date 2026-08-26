@@ -5,7 +5,7 @@ on:
   pull_request:
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-24.04
 
     steps:
@@ -24,7 +24,17 @@ jobs:
       - name: Package application
         run: |
           tar -czf hello-app-linux.tar.gz -C dist hello-app
-          ls -lh hello-app-linux.tar.gz
+
+      - name: Test packaged application
+        run: |
+          mkdir -p test
+          tar -xzf hello-app-linux.tar.gz -C test
+
+          output="$(./test/hello-app/bin/hello-app)"
+
+          echo "$output"
+
+          echo "$output" | grep -q "Hello from the emacs-linux build pipeline!"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
