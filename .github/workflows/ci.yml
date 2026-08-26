@@ -9,23 +9,9 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
-      - name: Inspect runner
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Use jq
         run: |
-          echo "=== OS ==="
-          cat /etc/os-release
-
-          echo
-          echo "=== Kernel ==="
-          uname -a
-
-          echo
-          echo "=== Architecture ==="
-          uname -m
-
-          echo
-          echo "=== CPU ==="
-          nproc
-
-          echo
-          echo "=== Memory ==="
-          free -h
+          echo '{"project":"emacs-linux","ci":true}' | jq
