@@ -31,8 +31,15 @@ jobs:
           name: hello-app-linux
           path: hello-app-linux.tar.gz
 
-  test:
+    test:
     needs: build
+
+    strategy:
+      matrix:
+        environment:
+          - standard
+          - alternate
+
     runs-on: ubuntu-24.04
 
     steps:
@@ -40,6 +47,10 @@ jobs:
         uses: actions/download-artifact@v5
         with:
           name: hello-app-linux
+
+      - name: Show environment
+        run: |
+          echo "Testing environment: ${{ matrix.environment }}"
 
       - name: Test packaged application
         run: |
