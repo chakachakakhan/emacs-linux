@@ -9,20 +9,25 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
-      - name: Create artifact
+      - name: Build application
         run: |
-          mkdir -p dist
+          mkdir -p dist/hello-app/bin
 
-          cat > dist/hello.txt <<EOF
-          Hello from emacs-linux CI!
-          Built on:
-          $(date -u)
-          Architecture:
-          $(uname -m)
+          cat > dist/hello-app/bin/hello-app <<'EOF'
+          #!/usr/bin/env bash
+          echo "Hello from the emacs-linux build pipeline!"
+          echo "Architecture: $(uname -m)"
           EOF
+
+          chmod +x dist/hello-app/bin/hello-app
+
+      - name: Package application
+        run: |
+          tar -czf hello-app-linux.tar.gz -C dist hello-app
+          ls -lh hello-app-linux.tar.gz
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: hello-linux
-          path: dist/hello.txt
+          name: hello-app-linux
+          path: hello-app-linux.tar.gz
