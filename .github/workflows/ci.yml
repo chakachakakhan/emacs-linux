@@ -5,21 +5,27 @@ on:
   pull_request:
 
 jobs:
-  build:
+    build:
     runs-on: ubuntu-24.04
 
     steps:
-      - name: Build application
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Install compiler
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc
+
+      - name: Compile application
         run: |
           mkdir -p dist/hello-app/bin
+          gcc hello.c -o dist/hello-app/bin/hello-app
 
-          cat > dist/hello-app/bin/hello-app <<'EOF'
-          #!/usr/bin/env bash
-          echo "Hello from the emacs-linux build pipeline!"
-          echo "Architecture: $(uname -m)"
-          EOF
-
-          chmod +x dist/hello-app/bin/hello-app
+      - name: Inspect binary
+        run: |
+          file dist/hello-app/bin/hello-app
+          ldd dist/hello-app/bin/hello-app
 
       - name: Package application
         run: |
