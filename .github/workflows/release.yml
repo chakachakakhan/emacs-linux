@@ -1,0 +1,16 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release-check:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Show release version
+        run: |
+          echo "Release tag: ${{ github.ref_name }}"
+          echo "Commit: ${{ github.sha }}"
