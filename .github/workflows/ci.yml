@@ -31,7 +31,7 @@ jobs:
           name: hello-app-linux
           path: hello-app-linux.tar.gz
 
-    test:
+  test:
     needs: build
 
     strategy:
