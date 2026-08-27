@@ -31,16 +31,9 @@ jobs:
           name: hello-app-linux
           path: hello-app-linux.tar.gz
 
-  test:
+  test-ubuntu:
     needs: build
-
-    strategy:
-      matrix:
-        os:
-          - ubuntu-22.04
-          - ubuntu-24.04
-
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Download build artifact
@@ -50,7 +43,40 @@ jobs:
 
       - name: Show operating system
         run: |
-          echo "Testing on: ${{ matrix.os }}"
+          echo "Testing on Ubuntu 24.04"
+          cat /etc/os-release
+
+      - name: Test packaged application
+        run: |
+          mkdir -p test
+          tar -xzf hello-app-linux.tar.gz -C test
+
+          output="$(./test/hello-app/bin/hello-app)"
+
+          echo "$output"
+
+          echo "$output" | grep -q "Hello from the emacs-linux build pipeline!"
+
+  test-arch:
+    needs: build
+    runs-on: ubuntu-24.04
+
+    container:
+      image: archlinux:latest
+
+    steps:
+      - name: Install test dependencies
+        run: |
+          pacman -Sy --noconfirm tar
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v5
+        with:
+          name: hello-app-linux
+
+      - name: Show operating system
+        run: |
+          echo "Testing on Arch Linux"
           cat /etc/os-release
 
       - name: Test packaged application
