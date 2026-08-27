@@ -36,11 +36,11 @@ jobs:
 
     strategy:
       matrix:
-        environment:
-          - standard
-          - alternate
+        os:
+          - ubuntu-22.04
+          - ubuntu-24.04
 
-    runs-on: ubuntu-24.04
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Download build artifact
@@ -48,9 +48,10 @@ jobs:
         with:
           name: hello-app-linux
 
-      - name: Show environment
+      - name: Show operating system
         run: |
-          echo "Testing environment: ${{ matrix.environment }}"
+          echo "Testing on: ${{ matrix.os }}"
+          cat /etc/os-release
 
       - name: Test packaged application
         run: |
